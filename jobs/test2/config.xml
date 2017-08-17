@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>Windows10</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@2.0">
+      <source class="hudson.plugins.groovy.StringSystemScriptSource">
+        <script plugin="script-security@1.27">
+          <script>import hudson.model.*
+import hudson.FilePath
+
+// the goal is to find the top level job which should contain the changelist
+def fp = null
+def text = &quot;&quot;
+if(build.workspace.isRemote())
+{
+    channel = build.workspace.channel;
+    fp = new FilePath(channel, build.workspace.toString() + &quot;\\projDetails.txt&quot;)
+} else {
+    fp = new FilePath(new File(build.workspace.toString() + &quot;/projDetails.txt&quot;))
+}
+def upstreamBuild = null
+def project = []
+def build = Thread.currentThread().executable
+def test1 = &quot;&quot;
+def cause = build.causes.find {
+    if(it instanceof hudson.model.Cause.UpstreamCause) {
+        return true 
+    }
+    return false
+}
+
+
+try {
+    while(cause != null) {
+		upstreamBuild = hudson.model.Hudson.instance.getItem(cause.upstreamProject).getBuildByNumber(cause.upstreamBuild)
+
+		buildNumber = upstreamBuild.getNumber()
+		projName = cause.upstreamProject.toString()
+		print &apos;write below details to file projDetails.txt&apos;
+		print buildNumber + &quot;\n&quot;
+		print projName + &quot;\n&quot;
+		text = text + projName + &quot; &quot; + buildNumber + &quot;\n&quot;
+		
+
+        if(upstreamBuild == null) {
+            break;
+        }
+        cause = upstreamBuild.causes.find {
+            if(it instanceof hudson.model.Cause.UpstreamCause) {               
+                return true 
+            }
+            return false
+        }
+    } 
+
+	if(fp != null)
+	{
+		if(text != &quot;&quot;)
+		{
+			fp.write(text, null); //writing to file
+		}
+	} 
+		
+        	
+} catch(e) {
+     println(e.toString())
+         println(e.getMessage())
+         println(e.getStackTrace())
+}
+</script>
+          <sandbox>false</sandbox>
+        </script>
+      </source>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+      <command>function Create-Changelist($items)
+{
+	foreach ($item in $items) {
+		Write-Output (&quot;Revision: &quot; + $item.commitid) &gt;&gt; changelist.txt 
+		Write-Output (&quot;Author: &quot; + $item.author.fullName) &gt;&gt; changelist.txt
+		Write-Output &quot;Files:&quot; &gt;&gt; changelist.txt
+		$paths = $item.path
+		
+		foreach ($path in $paths)
+		{
+			Write-Output (&quot;	&quot; + $path.file) &gt;&gt; changelist.txt
+		}
+		Write-Output &quot;=========================================&quot; &gt;&gt; changelist.txt
+	}
+
+}
+
+$proj1 = &quot;test&quot;
+$proj2 = &quot;test1&quot;
+
+$proj1Num = (Get-Content projDetails.txt | Select-String -Pattern &quot;$proj1 &quot;) -replace &apos;(.*)+\ +([1-9][0-9]*)&apos;,&apos;$2&apos;
+$proj2Num = (Get-Content projDetails.txt | Select-String -Pattern &quot;$proj2 &quot;) -replace &apos;(.*)+\ +([1-9][0-9]*)&apos;,&apos;$2&apos;
+
+$proj1Url = $env:JENKINS_URL + &apos;/job/&apos; + $proj1 + &apos;/&apos; + $proj1Num + &apos;/api/xml?wrapper=changes&amp;xpath=//changeSet&apos;
+$proj2Url = $env:JENKINS_URL + &apos;/job/&apos; + $proj2 + &apos;/&apos; + $proj2Num + &apos;/api/xml?wrapper=changes&amp;xpath=//changeSet&apos;
+#$proj1Url = &apos;http://172.26.54.6:8080/job/&apos; + $proj1 + &apos;/&apos; + $proj1Num + &apos;/api/xml?wrapper=changes&amp;xpath=//changeSet&apos;
+#$proj2Url = &apos;http://172.26.54.6:8080/job/&apos; + $proj2 + &apos;/&apos; + $proj2Num + &apos;/api/xml?wrapper=changes&amp;xpath=//changeSet&apos;
+
+Write-Output $proj1Url
+Write-Output $proj2Url
+
+$user = &apos;test&apos;
+$pass = &apos;test@123&apos;
+
+$pair = &quot;$($user):$($pass)&quot;
+
+$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
+
+$basicAuthValue = &quot;Basic $encodedCreds&quot;
+
+$Headers = @{
+    Authorization = $basicAuthValue
+}
+
+
+$proj1Xml = [xml](Invoke-WebRequest -Uri $proj1Url -Headers $Headers | select -ExpandProperty Content)
+$proj2Xml = [xml](Invoke-WebRequest -Uri $proj2Url -Headers $Headers | select -ExpandProperty Content)
+
+$proj1Items = $proj1Xml.changes.changeset.item
+$proj2Items = $proj2Xml.changes.changeset.item
+
+if (test-path changelist.txt)
+{
+	Remove-Item changelist.txt
+}
+
+if ($proj1Items.author -ne $null)
+{
+	Create-Changelist ($proj1Items)
+}
+
+if ($proj2Items.author -ne $null)
+{
+	Create-Changelist ($proj2Items)
+}
+
+if ( -Not (test-path changelist.txt))
+{
+	Write-Output &quot;No Changes&quot; &gt;&gt; changelist.txt
+}</command>
+    </hudson.plugins.powershell.PowerShell>
+  </builders>
+  <publishers>
+    <hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.57.2">
+      <recipientList>pratikg@xpanxion.co.in</recipientList>
+      <configuredTriggers>
+        <hudson.plugins.emailext.plugins.trigger.AlwaysTrigger>
+          <email>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <recipientProviders>
+              <hudson.plugins.emailext.plugins.recipients.DevelopersRecipientProvider/>
+              <hudson.plugins.emailext.plugins.recipients.ListRecipientProvider/>
+            </recipientProviders>
+            <attachmentsPattern></attachmentsPattern>
+            <attachBuildLog>false</attachBuildLog>
+            <compressBuildLog>false</compressBuildLog>
+            <replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+            <contentType>project</contentType>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.AlwaysTrigger>
+      </configuredTriggers>
+      <contentType>default</contentType>
+      <defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+      <defaultContent>$DEFAULT_CONTENT</defaultContent>
+      <attachmentsPattern>changelist.txt</attachmentsPattern>
+      <presendScript>$DEFAULT_PRESEND_SCRIPT</presendScript>
+      <postsendScript>$DEFAULT_POSTSEND_SCRIPT</postsendScript>
+      <attachBuildLog>false</attachBuildLog>
+      <compressBuildLog>false</compressBuildLog>
+      <replyTo>pratikg@xpanxion.co.in</replyTo>
+      <saveOutput>false</saveOutput>
+      <disabled>false</disabled>
+    </hudson.plugins.emailext.ExtendedEmailPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>TAGVER</name>
+          <description></description>
+          <defaultValue>0.0.1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Maven>
+      <targets>versions:set</targets>
+      <mavenName>Maven</mavenName>
+      <properties>newVersion=${TAGVER}-${BUILD_NUMBER}</properties>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <injectBuildVariables>true</injectBuildVariables>
+    </hudson.tasks.Maven>
+    <hudson.tasks.Maven>
+      <targets>clean deploy</targets>
+      <mavenName>Maven</mavenName>
+      <properties>altDeploymentRepository=releases::default::file:/var/www/html/webdav/releases/
+maven.test.skip=true</properties>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <injectBuildVariables>true</injectBuildVariables>
+    </hudson.tasks.Maven>
+    <hudson.tasks.Shell>
+      <command>echo &quot;&lt;a href=http://172.26.54.6/webdav/releases/com/sony/spe/mp/jasper/${TAGVER}-${BUILD_NUMBER}/jasperreport-${TAGVER}-${BUILD_NUMBER}.war&gt;Click Here to download the Latest Reports Artifact&lt;/a&gt;&quot; &gt; /var/www/html/webdav/latestreportsrelease.html
+echo &quot;&lt;br&gt;Application war file built on `date`&quot; &gt;&gt; /var/www/html/webdav/latestreportsrelease.html
+echo &quot;&lt;br&gt;SVN Revision == ${SVN_REVISION}&quot; &gt;&gt; /var/www/html/webdav/latestreportsrelease.html
+echo &quot;&lt;br&gt; File Name == dealpoint-${TAGVER}-${BUILD_NUMBER}.war&quot; &gt;&gt; /var/www/html/webdav/latestreportsrelease.html</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

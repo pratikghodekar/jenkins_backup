@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>true</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>15</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <eu.markov.jenkins.plugin.mvnmeta.MavenMetadataParameterDefinition plugin="maven-metadata-plugin@1.5.0">
+          <name>DEALPOINT</name>
+          <description>Dropdown for Dealpoint artifacts versions</description>
+          <repoBaseUrl>http://172.26.54.6/webdav/releases</repoBaseUrl>
+          <groupId>com.sony.spe</groupId>
+          <artifactId>dealpoint</artifactId>
+          <packaging>war</packaging>
+          <classifier></classifier>
+          <defaultValue>RELEASE</defaultValue>
+          <versionFilter></versionFilter>
+          <sortOrder>DESC</sortOrder>
+          <maxVersions>10</maxVersions>
+          <currentArtifactInfoUrl></currentArtifactInfoUrl>
+          <currentArtifactInfoLabel></currentArtifactInfoLabel>
+          <currentArtifactInfoPattern></currentArtifactInfoPattern>
+          <credentialsId></credentialsId>
+        </eu.markov.jenkins.plugin.mvnmeta.MavenMetadataParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>win10</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+      <command>Param([string]$dversion=$env:DEALPOINT_VERSION,[string]$durl=$env:DEALPOINT_ARTIFACT_URL)
+Write-Output $durl $dversion
+Remove-Item dealpoint*.war
+wget $durl -OutFile dealpoint-$dversion.war
+Remove-Item D:\C2C_Local_Setup\App\jboss-eap-6.4\standalone\deployments\dealpoint*
+Copy-Item dealpoint-$dversion.war D:\C2C_Local_Setup\App\jboss-eap-6.4\standalone\deployments\
+cd D:\C2C_Local_Setup\App\jboss-eap-6.4\bin\
+</command>
+    </hudson.plugins.powershell.PowerShell>
+  </builders>
+  <publishers>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.33">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs class="empty-list"/>
+          <projects>DealPointDBUpgrade,</projects>
+          <condition>UNSTABLE_OR_BETTER</condition>
+          <triggerWithNoParameters>true</triggerWithNoParameters>
+          <triggerFromChildProjects>false</triggerFromChildProjects>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

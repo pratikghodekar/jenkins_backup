@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.10">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.30">
+    <script>pipeline {
+    agent any
+    stages {
+        stage(&apos;BuildReports&apos;) {
+            steps {
+                build job: &apos;Reports&apos;, parameters: [string(name: &apos;TAGVER&apos;, value: &apos;0.0.1&apos;)]
+            }
+        }
+        stage(&apos;DeployReports&apos;) {
+            steps {
+                build job: &apos;DeployReports&apos;
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+</flow-definition>

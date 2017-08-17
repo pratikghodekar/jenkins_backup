@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <disabledAdministrativeMonitors/>
+  <version>2.66</version>
+  <numExecutors>2</numExecutors>
+  <mode>NORMAL</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:c2cdevops</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:c2cdevops</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:c2cdevops</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:c2cdevops</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:c2cdevops</permission>
+    <permission>hudson.model.Computer.Build:c2cdevops</permission>
+    <permission>hudson.model.Computer.Build:dev</permission>
+    <permission>hudson.model.Computer.Build:qa</permission>
+    <permission>hudson.model.Computer.Configure:c2cdevops</permission>
+    <permission>hudson.model.Computer.Connect:c2cdevops</permission>
+    <permission>hudson.model.Computer.Create:c2cdevops</permission>
+    <permission>hudson.model.Computer.Delete:c2cdevops</permission>
+    <permission>hudson.model.Computer.Disconnect:c2cdevops</permission>
+    <permission>hudson.model.Computer.Provision:c2cdevops</permission>
+    <permission>hudson.model.Hudson.Administer:c2cdevops</permission>
+    <permission>hudson.model.Hudson.Read:c2cdevops</permission>
+    <permission>hudson.model.Hudson.Read:dev</permission>
+    <permission>hudson.model.Hudson.Read:qa</permission>
+    <permission>hudson.model.Hudson.Read:test</permission>
+    <permission>hudson.model.Item.Build:c2cdevops</permission>
+    <permission>hudson.model.Item.Build:dev</permission>
+    <permission>hudson.model.Item.Build:qa</permission>
+    <permission>hudson.model.Item.Cancel:c2cdevops</permission>
+    <permission>hudson.model.Item.Cancel:dev</permission>
+    <permission>hudson.model.Item.Cancel:qa</permission>
+    <permission>hudson.model.Item.Configure:c2cdevops</permission>
+    <permission>hudson.model.Item.Create:c2cdevops</permission>
+    <permission>hudson.model.Item.Create:dev</permission>
+    <permission>hudson.model.Item.Create:qa</permission>
+    <permission>hudson.model.Item.Delete:c2cdevops</permission>
+    <permission>hudson.model.Item.Discover:c2cdevops</permission>
+    <permission>hudson.model.Item.Discover:dev</permission>
+    <permission>hudson.model.Item.Discover:qa</permission>
+    <permission>hudson.model.Item.Move:c2cdevops</permission>
+    <permission>hudson.model.Item.Read:c2cdevops</permission>
+    <permission>hudson.model.Item.Read:dev</permission>
+    <permission>hudson.model.Item.Read:qa</permission>
+    <permission>hudson.model.Item.Read:test</permission>
+    <permission>hudson.model.Item.Workspace:c2cdevops</permission>
+    <permission>hudson.model.Item.Workspace:dev</permission>
+    <permission>hudson.model.Item.Workspace:qa</permission>
+    <permission>hudson.model.Run.Delete:c2cdevops</permission>
+    <permission>hudson.model.Run.Replay:c2cdevops</permission>
+    <permission>hudson.model.Run.Update:c2cdevops</permission>
+    <permission>hudson.model.View.Configure:c2cdevops</permission>
+    <permission>hudson.model.View.Configure:dev</permission>
+    <permission>hudson.model.View.Configure:qa</permission>
+    <permission>hudson.model.View.Create:c2cdevops</permission>
+    <permission>hudson.model.View.Create:dev</permission>
+    <permission>hudson.model.View.Create:qa</permission>
+    <permission>hudson.model.View.Delete:c2cdevops</permission>
+    <permission>hudson.model.View.Read:c2cdevops</permission>
+    <permission>hudson.model.View.Read:dev</permission>
+    <permission>hudson.model.View.Read:qa</permission>
+    <permission>hudson.scm.SCM.Tag:c2cdevops</permission>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+    <disableSignup>true</disableSignup>
+    <enableCaptcha>false</enableCaptcha>
+  </securityRealm>
+  <disableRememberMe>false</disableRememberMe>
+  <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+  <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
+  <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+  <jdks/>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <quietPeriod>5</quietPeriod>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>all</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.AllView>
+    <au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView plugin="build-pipeline-plugin@1.5.7.1">
+      <owner class="hudson" reference="../../.."/>
+      <name>DealPoint - Pipeline View</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <gridBuilder class="au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder">
+        <firstJob>DealPointBuild</firstJob>
+        <firstJobLink>job/DealPointBuild/</firstJobLink>
+      </gridBuilder>
+      <noOfDisplayedBuilds>5</noOfDisplayedBuilds>
+      <buildViewTitle></buildViewTitle>
+      <consoleOutputLinkStyle>Lightbox</consoleOutputLinkStyle>
+      <cssUrl></cssUrl>
+      <triggerOnlyLatestJob>false</triggerOnlyLatestJob>
+      <alwaysAllowManualTrigger>false</alwaysAllowManualTrigger>
+      <showPipelineParameters>false</showPipelineParameters>
+      <rowHeaders class="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleRowHeader"/>
+      <showPipelineParametersInHeaders>false</showPipelineParametersInHeaders>
+      <columnHeaders class="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader"/>
+      <buildCard class="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard"/>
+      <startsWithParameters>false</startsWithParameters>
+      <refreshFrequency>3</refreshFrequency>
+      <showPipelineDefinitionHeader>false</showPipelineDefinitionHeader>
+    </au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView>
+    <au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView plugin="build-pipeline-plugin@1.5.7.1">
+      <owner class="hudson" reference="../../.."/>
+      <name>test</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <gridBuilder class="au.com.centrumsystems.hudson.plugin.buildpipeline.DownstreamProjectGridBuilder">
+        <firstJob>test</firstJob>
+        <firstJobLink>job/test/</firstJobLink>
+      </gridBuilder>
+      <noOfDisplayedBuilds>1</noOfDisplayedBuilds>
+      <buildViewTitle></buildViewTitle>
+      <consoleOutputLinkStyle>Lightbox</consoleOutputLinkStyle>
+      <cssUrl></cssUrl>
+      <triggerOnlyLatestJob>false</triggerOnlyLatestJob>
+      <alwaysAllowManualTrigger>false</alwaysAllowManualTrigger>
+      <showPipelineParameters>false</showPipelineParameters>
+      <rowHeaders class="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.SimpleRowHeader"/>
+      <showPipelineParametersInHeaders>false</showPipelineParametersInHeaders>
+      <columnHeaders class="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.NullColumnHeader"/>
+      <buildCard class="au.com.centrumsystems.hudson.plugin.buildpipeline.extension.StandardBuildCard"/>
+      <startsWithParameters>false</startsWithParameters>
+      <refreshFrequency>3</refreshFrequency>
+      <showPipelineDefinitionHeader>false</showPipelineDefinitionHeader>
+    </au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView>
+  </views>
+  <primaryView>all</primaryView>
+  <slaveAgentPort>0</slaveAgentPort>
+  <label></label>
+  <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+    <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+  </crumbIssuer>
+  <nodeProperties/>
+  <globalNodeProperties/>
+</hudson>

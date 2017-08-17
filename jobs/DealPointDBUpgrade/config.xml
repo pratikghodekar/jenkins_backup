@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.7.2">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://devops.concept2alize.com/repos/c2c/DealPoint/trunk</remote>
+        <credentialsId>c558764a-691e-4974-8c27-83f23a471032</credentialsId>
+        <local>.</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.CheckoutUpdater"/>
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+    <filterChangelog>false</filterChangelog>
+  </scm>
+  <assignedNode>Windows10</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+      <command>############### Set properties in flyway.properties ######################
+$AppProps = convertfrom-stringdata (get-content ./dealpoint/flyway.properties -raw)
+$AppProps[&apos;flyway.password&apos;]=&apos;oracle&apos;
+$AppProps[&apos;flyway.locations&apos;]=&apos;filesystem:./dealpoint/src/main/sql/V0.0.4.0/&apos;
+$AppProps.GetEnumerator() | % { &quot;$($_.Name)=$($_.Value)&quot; }| Set-Content -Encoding UTF8 ./dealpoint/flyway.properties
+
+############### Set UTF8 encoding for flyway.properties ######################
+$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+$MyFile = Get-Content ./dealpoint/flyway.properties
+[System.IO.File]::WriteAllLines(&quot;./dealpoint/flyway.properties&quot;, $MyFile, $Utf8NoBomEncoding)</command>
+    </hudson.plugins.powershell.PowerShell>
+    <hudson.tasks.Maven>
+      <targets>flyway:repair flyway:migrate</targets>
+      <mavenName>Maven</mavenName>
+      <pom>./dealpoint/pom.xml</pom>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <injectBuildVariables>false</injectBuildVariables>
+    </hudson.tasks.Maven>
+  </builders>
+  <publishers>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.33">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs class="empty-list"/>
+          <projects>DealPointAutomation, </projects>
+          <condition>UNSTABLE_OR_BETTER</condition>
+          <triggerWithNoParameters>true</triggerWithNoParameters>
+          <triggerFromChildProjects>false</triggerFromChildProjects>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

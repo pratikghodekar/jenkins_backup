@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.20">
+  <hudsonUrl>http://172.26.54.6:8080/</hudsonUrl>
+  <smtpAuthUsername>pratikg@xpanxion.co.in</smtpAuthUsername>
+  <smtpAuthPassword>{AQAAABAAAAAQV2er1qo5LGQz04t6xjXMR21Qgbjc2etkuJvk+4vTk70=}</smtpAuthPassword>
+  <replyToAddress>pratikg@xpanxion.co.in</replyToAddress>
+  <smtpHost>172.26.1.6</smtpHost>
+  <useSsl>false</useSsl>
+  <smtpPort>587</smtpPort>
+  <charset>UTF-8</charset>
+</hudson.tasks.Mailer_-DescriptorImpl>

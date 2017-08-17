@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<slave>
+  <name>Windows10</name>
+  <description></description>
+  <remoteFS>C:\Jenkins</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <launcher class="hudson.slaves.JNLPLauncher"/>
+  <label>win10</label>
+  <nodeProperties>
+    <hudson.slaves.EnvironmentVariablesNodeProperty>
+      <envVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </default>
+          <int>2</int>
+          <string>JAVA_HOME</string>
+          <string>C:\Program Files\Java\jdk1.8.0_131</string>
+          <string>path</string>
+          <string>%JAVA_HOME%/bin:C:\Program Files\apache-maven-3.5.0-bin\apache-maven-3.5.0\bin:%path%</string>
+        </tree-map>
+      </envVars>
+    </hudson.slaves.EnvironmentVariablesNodeProperty>
+    <hudson.tools.ToolLocationNodeProperty>
+      <locations>
+        <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          <type>hudson.tasks.Maven$MavenInstallation$DescriptorImpl</type>
+          <name>Maven</name>
+          <home>C:\Program Files\apache-maven-3.5.0-bin\apache-maven-3.5.0</home>
+        </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+      </locations>
+    </hudson.tools.ToolLocationNodeProperty>
+  </nodeProperties>
+</slave>
