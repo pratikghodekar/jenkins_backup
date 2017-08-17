@@ -36,7 +36,7 @@
       <configs>
         <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
           <configs class="empty-list"/>
-          <projects>test1,</projects>
+          <projects>test1</projects>
           <condition>UNSTABLE_OR_BETTER</condition>
           <triggerWithNoParameters>true</triggerWithNoParameters>
           <triggerFromChildProjects>false</triggerFromChildProjects>
