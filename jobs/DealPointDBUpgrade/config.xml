@@ -58,7 +58,7 @@ $MyFile = Get-Content ./dealpoint/flyway.properties
       <configs>
         <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
           <configs class="empty-list"/>
-          <projects>DealPointAutomation, </projects>
+          <projects>DealPointAutomation,</projects>
           <condition>UNSTABLE_OR_BETTER</condition>
           <triggerWithNoParameters>true</triggerWithNoParameters>
           <triggerFromChildProjects>false</triggerFromChildProjects>
